@@ -1,0 +1,16 @@
+title: Find cards for dash board 20140427 204455
+given:
+  - time: 2014-04-27T20:44:55.884+02:00
+  - collection: cards
+    data: |
+        { "_id" : { "$oid" : "535d500f07b286492e4433af"} , "dashboardRef" : "test" , "text" : "This is a test"}
+wts:
+  - when: |
+       GET dashboard/test/cards
+       Cookie: RestxSession-rtdm={"principal":"admin","sessionKey":"97661906-608d-40a5-b9c7-df612a4841ca","_expires":"2014-05-27T20:44:55.884+02:00"}; RestxSessionSignature-rtdm=PrMIiBnJ9bqi8VQNdVqAUioIlcY=
+    then: |
+        [ {
+          "dashboardRef" : "test",
+          "text" : "This is a test",
+          "_id" : "535d500f07b286492e4433af"
+        } ]

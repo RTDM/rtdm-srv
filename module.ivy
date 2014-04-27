@@ -18,6 +18,7 @@
         <dependency org="io.restx" name="restx-security-basic" rev="0.32" conf="default" />
         <dependency org="io.restx" name="restx-core-annotation-processor" rev="0.32" conf="default" />
         <dependency org="io.restx" name="restx-factory" rev="0.32" conf="default" />
+        <dependency org="io.restx" name="restx-jongo" rev="0.32" conf="default" />
         <dependency org="io.restx" name="restx-factory-admin" rev="0.32" conf="default" />
         <dependency org="io.restx" name="restx-monitor-admin" rev="0.32" conf="default" />
         <dependency org="io.restx" name="restx-log-admin" rev="0.32" conf="default" />
@@ -28,6 +29,7 @@
         <dependency org="io.restx" name="restx-admin" rev="0.32" conf="default" />
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.0.13" conf="default" />
         <dependency org="io.restx" name="restx-specs-tests" rev="0.32" conf="test->default" />
+        <dependency org="io.restx" name="restx-jongo-specs-tests" rev="0.32" conf="test->default" />
         <dependency org="junit" name="junit" rev="4.11" conf="test->default" />
     </dependencies>
 </ivy-module>
