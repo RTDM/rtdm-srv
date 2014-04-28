@@ -69,4 +69,8 @@ public class MongoPersistor {
         activities.get().save(activity);
         return true;
     }
+
+    public Iterable<Activity> getActivities() {
+        return activities.get().find().as(Activity.class);
+    }
 }
