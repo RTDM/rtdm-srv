@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 public class Activity {
 
     public enum Event {
-        NEW_RATING, CARD_UPDATED
+        NEW_RATING, CARD_CREATED, CARD_UPDATED
     }
 
     private Event event;

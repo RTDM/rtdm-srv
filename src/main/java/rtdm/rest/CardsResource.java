@@ -38,6 +38,12 @@ public class CardsResource {
         card.setStatus(Card.Status.TODO);
         card.setDashboardKey(dashboardKey);
         persistor.createOrUpdateCard(dashboardKey, card);
+        persistor.createActivity(
+                new Activity()
+                        .setCard(card)
+                        .setEvent(Activity.Event.CARD_CREATED)
+                        .setTimestamp(DateTime.now())
+        );
         return persistor.getCards(dashboardKey);
     }
 
