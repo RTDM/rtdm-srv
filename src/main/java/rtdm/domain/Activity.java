@@ -2,7 +2,7 @@ package rtdm.domain;
 
 import org.joda.time.DateTime;
 
-public class Activity {
+public class Activity extends Entity {
 
     public enum Event {
         NEW_RATING, CARD_CREATED, CARD_UPDATED

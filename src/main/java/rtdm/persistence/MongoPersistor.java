@@ -1,5 +1,6 @@
 package rtdm.persistence;
 
+import org.bson.types.ObjectId;
 import restx.factory.Component;
 import restx.jongo.JongoCollection;
 import rtdm.domain.Activity;
@@ -41,6 +42,7 @@ public class MongoPersistor {
     }
 
     public boolean createOrUpdateDashboard(Dashboard dashboard) {
+        dashboard.setKey(new ObjectId().toString());
         dashboards.get().save(dashboard);
         return true;
     }
@@ -52,6 +54,7 @@ public class MongoPersistor {
 
     public boolean createOrUpdateCard(String dashboardKey, Card card) {
         card.setDashboardKey(dashboardKey);
+        card.setKey(new ObjectId().toString());
         cards.get().save(card);
         return true;
     }
@@ -62,6 +65,7 @@ public class MongoPersistor {
     }
 
     public boolean createActivity(Activity activity) {
+        activity.setKey(new ObjectId().toString());
         activities.get().save(activity);
         return true;
     }
