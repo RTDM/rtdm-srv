@@ -1,30 +1,44 @@
 package rtdm.rest;
 
 import restx.annotations.GET;
+import restx.annotations.PUT;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
-import restx.jongo.JongoCollection;
 import restx.security.PermitAll;
 import rtdm.domain.Card;
+import rtdm.persistence.MongoPersistor;
 
-import javax.inject.Named;
+import java.util.Optional;
 
 /**
  * Date: 27/4/14
  * Time: 20:38
  */
-@RestxResource @Component
+@RestxResource
+@Component
 public class CardsResource {
-    private final JongoCollection cards;
 
-    public CardsResource(@Named("cards") JongoCollection cards) {
-        this.cards = cards;
+    private final MongoPersistor persistor;
+
+    public CardsResource(MongoPersistor persistor) {
+        this.persistor = persistor;
     }
 
     @PermitAll
     @GET("/dashboard/:dashboardKey/cards")
     public Iterable<Card> findCardsForDashBoard(String dashboardKey) {
-        return cards.get().find("{dashboardRef: #}", dashboardKey).as(Card.class);
+        return persistor.getCards(dashboardKey);
+    }
+
+    @PermitAll
+    @PUT("/dashboard/:dashboardKey/cards/:cardRef/status")
+    public void updateCardStatus(String dashboardKey, String cardRef, Card.Status status) {
+        Optional<Card> card = persistor.getCard(dashboardKey, cardRef);
+        if (!card.isPresent()) {
+            return;
+        }
+        card.get().setStatus(status);
+        persistor.createOrUpdateCard(card.get());
     }
 
 }

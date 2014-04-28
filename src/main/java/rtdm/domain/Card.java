@@ -1,39 +1,42 @@
 package rtdm.domain;
 
-import org.jongo.marshall.jackson.oid.Id;
-import org.jongo.marshall.jackson.oid.ObjectId;
-
 /**
  * Date: 27/4/14
  * Time: 20:37
  */
-public class Card {
-    @Id @ObjectId
-    private String key;
+public class Card extends Entity {
 
-    private String dashboardRef;
+    public enum Status {
+        TODO, DOING, PUSHED, BUILT, DEPLOYED, ERROR
+    }
+
+    private String ref;
+
+    private String dashboardKey;
 
     private String text;
 
-    public String getKey() {
-        return key;
+    private Status status;
+
+    public String getRef() {
+        return ref;
     }
 
-    public String getDashboardRef() {
-        return dashboardRef;
+    public String getDashboardKey() {
+        return dashboardKey;
     }
 
     public String getText() {
         return text;
     }
 
-    public Card setKey(final String key) {
-        this.key = key;
+    public Card setRef(final String ref) {
+        this.ref = ref;
         return this;
     }
 
-    public Card setDashboardRef(final String dashboardRef) {
-        this.dashboardRef = dashboardRef;
+    public Card setDashboardKey(final String dashboardKey) {
+        this.dashboardKey = dashboardKey;
         return this;
     }
 
@@ -42,12 +45,22 @@ public class Card {
         return this;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public Card setStatus(final Status status) {
+        this.status = status;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
-                "key='" + key + '\'' +
-                ", dashboardRef='" + dashboardRef + '\'' +
+                "ref='" + ref + '\'' +
+                ", dashboardKey='" + dashboardKey + '\'' +
                 ", text='" + text + '\'' +
+                ", status=" + status +
                 '}';
     }
 }
