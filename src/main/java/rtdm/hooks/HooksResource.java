@@ -1,9 +1,9 @@
-package hooks;
+package rtdm.hooks;
 
-import hooks.domain.DroneHookPayload;
-import hooks.domain.GitHubCommit;
-import hooks.domain.GitHubHookPayload;
-import hooks.domain.HerokuHookPayload;
+import rtdm.hooks.domain.DroneHookPayload;
+import rtdm.hooks.domain.GitHubCommit;
+import rtdm.hooks.domain.GitHubHookPayload;
+import rtdm.hooks.domain.HerokuHookPayload;
 import restx.annotations.POST;
 import restx.annotations.RestxResource;
 import restx.factory.Component;

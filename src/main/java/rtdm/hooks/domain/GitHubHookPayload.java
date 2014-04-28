@@ -1,4 +1,4 @@
-package hooks.domain;
+package rtdm.hooks.domain;
 
 import java.util.List;
 
