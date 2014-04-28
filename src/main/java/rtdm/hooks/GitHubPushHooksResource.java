@@ -1,14 +1,12 @@
 package rtdm.hooks;
 
-import rtdm.hooks.domain.DroneHookPayload;
-import rtdm.hooks.domain.GitHubCommit;
-import rtdm.hooks.domain.GitHubHookPayload;
-import rtdm.hooks.domain.HerokuHookPayload;
 import restx.annotations.POST;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
 import rtdm.domain.Card;
 import rtdm.domain.Dashboard;
+import rtdm.hooks.domain.GitHubCommit;
+import rtdm.hooks.domain.GitHubHookPayload;
 import rtdm.persistence.MongoPersistor;
 import rtdm.rest.CardsResource;
 
@@ -18,20 +16,21 @@ import java.util.regex.Pattern;
 
 @Component
 @RestxResource
-public class HooksResource {
+
+public class GitHubPushHooksResource {
 
     private static Pattern CARD_REF_PATTERN = Pattern.compile(".*#(\\d+).*");
 
     private final MongoPersistor persistor;
     private final CardsResource cardsResource;
 
-    public HooksResource(final MongoPersistor persistor,
-                         final CardsResource cardsResource) {
+    public GitHubPushHooksResource(final MongoPersistor persistor,
+                                   final CardsResource cardsResource) {
         this.persistor = persistor;
         this.cardsResource = cardsResource;
     }
 
-    @POST("/hooks/:dashboardRef/onPush")
+    @POST("/hooks/github/:dashboardRef/onPush")
     public void onPushHook(String dashboardRef, GitHubHookPayload payload) {
 
         Optional<Dashboard> dbDashBoard = persistor.getDashboard(dashboardRef);
@@ -47,15 +46,5 @@ public class HooksResource {
             String cardRef = matcher.group(1);
             cardsResource.updateCardStatus(dbDashBoard.get().getKey(), cardRef, Card.Status.PUSHED);
         }
-    }
-
-    @POST("/hooks/:dashboardRef/onBuild")
-    public void onBuildHook(String dashboardRef, DroneHookPayload payload) {
-        // TODO
-    }
-
-    @POST("/hooks/:dashboardRef/onDeploy")
-    public void onDeployHook(String dashboardRef, HerokuHookPayload payload) {
-        // TODO
     }
 }
