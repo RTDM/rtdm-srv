@@ -4,6 +4,7 @@ import restx.annotations.GET;
 import restx.annotations.POST;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
+import restx.security.PermitAll;
 import rtdm.domain.Dashboard;
 import rtdm.persistence.MongoPersistor;
 
@@ -17,6 +18,7 @@ public class DashboardResource {
         this.persistor = persistor;
     }
 
+    @PermitAll
     @GET("/dashboard")
     public Iterable<Dashboard> getDashboards() {
         return persistor.getDashboards();
