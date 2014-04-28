@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 @Component
 @RestxResource
-
 public class GitHubPushHooksResource {
 
     private static Pattern CARD_REF_PATTERN = Pattern.compile(".*#(\\d+).*");
