@@ -1,10 +1,13 @@
 package rtdm.rest;
 
+import org.joda.time.DateTime;
 import restx.annotations.GET;
+import restx.annotations.POST;
 import restx.annotations.PUT;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
 import restx.security.PermitAll;
+import rtdm.domain.Activity;
 import rtdm.domain.Card;
 import rtdm.persistence.MongoPersistor;
 
@@ -30,15 +33,30 @@ public class CardsResource {
         return persistor.getCards(dashboardKey);
     }
 
+    @POST("/dashboard/:dashboardKey/cards")
+    public Iterable<Card> addCard(String dashboardKey, Card card) {
+        card.setStatus(Card.Status.TODO);
+        card.setDashboardKey(dashboardKey);
+        persistor.createOrUpdateCard(dashboardKey, card);
+        return persistor.getCards(dashboardKey);
+    }
+
     @PermitAll
-    @PUT("/dashboard/:dashboardKey/cards/:cardRef/status")
-    public void updateCardStatus(String dashboardKey, String cardRef, Card.Status status) {
+    @PUT("/dashboard/:dashboardKey/cards/:cardRef/:status")
+    public Optional<Card> updateCardStatus(String dashboardKey, String cardRef, Card.Status status) {
         Optional<Card> card = persistor.getCard(dashboardKey, cardRef);
         if (!card.isPresent()) {
-            return;
+            return Optional.empty();
         }
         card.get().setStatus(status);
-        persistor.createOrUpdateCard(card.get());
+        persistor.createOrUpdateCard(dashboardKey, card.get());
+        persistor.createActivity(
+                new Activity()
+                        .setCard(card.get())
+                        .setEvent(Activity.Event.CARD_UPDATED)
+                        .setTimestamp(DateTime.now())
+        );
+        return card;
     }
 
 }

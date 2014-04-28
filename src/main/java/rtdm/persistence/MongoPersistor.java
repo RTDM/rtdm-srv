@@ -2,6 +2,7 @@ package rtdm.persistence;
 
 import restx.factory.Component;
 import restx.jongo.JongoCollection;
+import rtdm.domain.Activity;
 import rtdm.domain.Card;
 import rtdm.domain.Dashboard;
 
@@ -13,11 +14,14 @@ public class MongoPersistor {
 
     private final JongoCollection dashboards;
     private final JongoCollection cards;
+    private final JongoCollection activities;
 
-    public MongoPersistor(@Named("dashboards") JongoCollection dashboards,
-                          @Named("cards") JongoCollection cards) {
+    public MongoPersistor(@Named("dashboards") final JongoCollection dashboards,
+                          @Named("cards") final JongoCollection cards,
+                          @Named("activities") final JongoCollection activities) {
         this.dashboards = dashboards;
         this.cards = cards;
+        this.activities = activities;
     }
 
     public Iterable<Dashboard> getDashboards() {
@@ -36,13 +40,29 @@ public class MongoPersistor {
         return Optional.ofNullable(cards.get().findOne("{ dashboardKey: #, ref: # }", dashboardKey, cardRef).as(Card.class));
     }
 
-    public boolean createOrUpdateCard(Card card) {
+    public boolean createOrUpdateDashboard(Dashboard dashboard) {
+        dashboards.get().save(dashboard);
+        return true;
+    }
+
+    public boolean deleteDashboard(String key) {
+        dashboards.get().remove(key);
+        return true;
+    }
+
+    public boolean createOrUpdateCard(String dashboardKey, Card card) {
+        card.setDashboardKey(dashboardKey);
         cards.get().save(card);
         return true;
     }
 
     public boolean deleteCard(String key) {
         cards.get().remove(key);
+        return true;
+    }
+
+    public boolean createActivity(Activity activity) {
+        activities.get().save(activity);
         return true;
     }
 }
