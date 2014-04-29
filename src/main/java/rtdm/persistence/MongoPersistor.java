@@ -54,7 +54,10 @@ public class MongoPersistor {
 
     public boolean createOrUpdateCard(String dashboardKey, Card card) {
         card.setDashboardKey(dashboardKey);
-        card.setKey(new ObjectId().toString());
+        if (card.getKey() == null) {
+            // workaround jongo 1.0 bug - shouldn't be necessary
+            card.setKey(new ObjectId().toString());
+        }
         cards.get().save(card);
         return true;
     }
