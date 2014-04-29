@@ -1,8 +1,11 @@
 package rtdm.hooks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import restx.annotations.POST;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
+import restx.security.PermitAll;
 import rtdm.domain.Card;
 import rtdm.domain.Dashboard;
 import rtdm.hooks.domain.GitHubCommit;
@@ -17,6 +20,7 @@ import java.util.regex.Pattern;
 @Component
 @RestxResource
 public class GitHubPushHooksResource {
+    private static final Logger logger = LoggerFactory.getLogger(GitHubPushHooksResource.class);
 
     private static Pattern CARD_REF_PATTERN = Pattern.compile(".*#(\\d+).*");
 
@@ -29,11 +33,14 @@ public class GitHubPushHooksResource {
         this.cardsResource = cardsResource;
     }
 
+    @PermitAll
     @POST("/hooks/github/:dashboardRef/onPush")
     public void onPushHook(String dashboardRef, GitHubHookPayload payload) {
+        logger.info("received GitHub push hook request for {}: {}", dashboardRef, payload);
 
         Optional<Dashboard> dbDashBoard = persistor.getDashboard(dashboardRef);
         if (!dbDashBoard.isPresent()) {
+            logger.warn("dashboard not found for GitHub push hook request on {}", dashboardRef);
             return;
         }
 
@@ -43,6 +50,7 @@ public class GitHubPushHooksResource {
                 continue;
             }
             String cardRef = matcher.group(1);
+            logger.info("updating card {} / {} status triggered by github hook", dashboardRef, cardRef);
             cardsResource.updateCardStatus(dbDashBoard.get().getKey(), cardRef, Card.Status.PUSHED);
         }
     }
