@@ -25,6 +25,16 @@ public class BuildHooksResource {
         this.cardsResource = cardsResource;
     }
 
+    /**
+     * A generic build hook.
+     *
+     * Example of call with curl:
+     * <code>
+     * curl -X POST -H "Content-Type: application/json" -d "{\"commitHash\":\"$GIT_COMMIT\",\"buildNumber\":\"$BUILD_ID\",\"buildURL\":\"$BUILD_URL\"}" http://rtdm.restx.io/api/hooks/build/535eb9a5975a9d56a4f5d706/onBuild
+     * </code>
+     * @param dashboardKey the key of the dashboard containing the card
+     * @param payload the build hook payload
+     */
     @PermitAll
     @POST("/hooks/build/:dashboardKey/onBuild")
     public void onBuildHook(String dashboardKey, BuildHookPayload payload) {
@@ -36,6 +46,15 @@ public class BuildHooksResource {
         }
 
         for (Card card : cards) {
+            if (!card.getDashboardKey().equals(dashboardKey)) {
+                logger.debug(
+                        "found a card matching build hook commit but not dashboardKey: " +
+                                "dashboardKey={}, card={}, payload={}",
+                        dashboardKey, card, payload);
+                continue;
+            }
+            logger.info("updating card {} / {} status triggered by build hook {}",
+                    card.getDashboardKey(), card.getKey(), payload);
             card.setStatus(Status.BUILT);
             card.getLinks().add(new Link()
                     .setCategory("Build")
