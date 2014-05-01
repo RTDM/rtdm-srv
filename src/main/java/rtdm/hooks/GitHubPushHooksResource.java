@@ -59,7 +59,7 @@ public class GitHubPushHooksResource {
                 card.get().getCommits().add(commit);
                 card.get().getLinks().add(new Link()
                         .setCategory("GitHub")
-                        .setName("commit " + commit.getId())
+                        .setName("commit " + commit.getId().substring(0, 8))
                         .setUrl("https://github.com/" + org + "/" + repo + "/commit/" + commit.getId())
                 );
                 cardsResource.updateCard(dbDashBoard.get().getKey(), card.get().getKey(), card.get());
