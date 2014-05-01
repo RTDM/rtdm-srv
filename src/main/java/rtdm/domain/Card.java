@@ -1,5 +1,8 @@
 package rtdm.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Date: 27/4/14
  * Time: 20:37
@@ -18,6 +21,8 @@ public class Card extends Entity {
 
     private Status status;
 
+    private List<GitCommit> commits = new ArrayList<>();
+
     public String getRef() {
         return ref;
     }
@@ -28,6 +33,10 @@ public class Card extends Entity {
 
     public String getText() {
         return text;
+    }
+
+    public List<GitCommit> getCommits() {
+        return commits;
     }
 
     public Card setRef(final String ref) {
@@ -54,6 +63,11 @@ public class Card extends Entity {
         return this;
     }
 
+    public Card setCommits(final List<GitCommit> commits) {
+        this.commits = commits;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
@@ -61,6 +75,7 @@ public class Card extends Entity {
                 ", dashboardKey='" + dashboardKey + '\'' +
                 ", text='" + text + '\'' +
                 ", status=" + status +
+                ", commits=" + commits +
                 '}';
     }
 }

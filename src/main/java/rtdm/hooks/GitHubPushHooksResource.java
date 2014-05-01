@@ -7,8 +7,9 @@ import restx.annotations.RestxResource;
 import restx.factory.Component;
 import restx.security.PermitAll;
 import rtdm.domain.Card;
+import rtdm.domain.Card.Status;
 import rtdm.domain.Dashboard;
-import rtdm.hooks.domain.GitHubCommit;
+import rtdm.domain.GitCommit;
 import rtdm.hooks.domain.GitHubHookPayload;
 import rtdm.persistence.MongoPersistor;
 import rtdm.rest.CardsResource;
@@ -34,24 +35,29 @@ public class GitHubPushHooksResource {
     }
 
     @PermitAll
-    @POST("/hooks/github/:dashboardRef/onPush")
-    public void onPushHook(String dashboardRef, GitHubHookPayload payload) {
-        logger.info("received GitHub push hook request for {}: {}", dashboardRef, payload);
+    @POST("/hooks/github/:dashboardKey/onPush")
+    public void onPushHook(String dashboardKey, GitHubHookPayload payload) {
+        logger.info("received GitHub push hook request for {}: {}", dashboardKey, payload);
 
-        Optional<Dashboard> dbDashBoard = persistor.getDashboard(dashboardRef);
+        Optional<Dashboard> dbDashBoard = persistor.getDashboardByKey(dashboardKey);
         if (!dbDashBoard.isPresent()) {
-            logger.warn("dashboard not found for GitHub push hook request on {}", dashboardRef);
+            logger.warn("dashboard not found for GitHub push hook request on {}", dashboardKey);
             return;
         }
 
-        for (GitHubCommit commit : payload.getCommits()) {
+        for (GitCommit commit : payload.getCommits()) {
             Matcher matcher = CARD_REF_PATTERN.matcher(commit.getMessage());
             if (!matcher.matches() || matcher.groupCount() == 0) {
                 continue;
             }
             String cardRef = matcher.group(1);
-            logger.info("updating card {} / {} status triggered by github hook", dashboardRef, cardRef);
-            cardsResource.updateCardStatus(dbDashBoard.get().getKey(), cardRef, Card.Status.PUSHED);
+            Optional<Card> card = cardsResource.findCardByRef(dbDashBoard.get().getKey(), cardRef);
+            if (card.isPresent()) {
+                logger.info("updating card {} / {} status triggered by github hook", dbDashBoard.get().getName(), cardRef);
+                card.get().setStatus(Status.PUSHED);
+                card.get().getCommits().add(commit);
+                cardsResource.updateCard(dbDashBoard.get().getKey(), card.get().getKey(), card.get());
+            }
         }
     }
 }

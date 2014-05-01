@@ -34,16 +34,20 @@ public class MongoPersistor {
         return dashboards.get().find().as(Dashboard.class);
     }
 
-    public Optional<Dashboard> getDashboard(String name) {
-        return Optional.ofNullable(dashboards.get().findOne("{ name: # }", name).as(Dashboard.class));
+    public Optional<Dashboard> getDashboardByKey(String key) {
+        return Optional.ofNullable(dashboards.get().findOne(new ObjectId(key)).as(Dashboard.class));
     }
 
     public Iterable<Card> getCards(String dashboardKey) {
         return cards.get().find("{ dashboardKey: # }", dashboardKey).as(Card.class);
     }
 
-    public Optional<Card> getCard(String dashboardKey, String cardRef) {
+    public Optional<Card> getCardByRef(String dashboardKey, String cardRef) {
         return Optional.ofNullable(cards.get().findOne("{ dashboardKey: #, ref: # }", dashboardKey, cardRef).as(Card.class));
+    }
+
+    public Optional<Card> getCardByKey(String cardKey) {
+        return Optional.ofNullable(cards.get().findOne(new ObjectId(cardKey)).as(Card.class));
     }
 
     public boolean createOrUpdateDashboard(Dashboard dashboard) {

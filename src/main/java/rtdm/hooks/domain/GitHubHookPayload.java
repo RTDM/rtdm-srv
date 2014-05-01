@@ -1,16 +1,18 @@
 package rtdm.hooks.domain;
 
+import rtdm.domain.GitCommit;
+
 import java.util.List;
 
 public class GitHubHookPayload {
 
-    private List<GitHubCommit> commits;
+    private List<GitCommit> commits;
 
-    public List<GitHubCommit> getCommits() {
+    public List<GitCommit> getCommits() {
         return commits;
     }
 
-    public GitHubHookPayload setCommits(final List<GitHubCommit> commits) {
+    public GitHubHookPayload setCommits(final List<GitCommit> commits) {
         this.commits = commits;
         return this;
     }
