@@ -42,6 +42,10 @@ public class CardsResource {
         return persistor.getCardByRef(dashboardKey, cardRef);
     }
 
+    public Iterable<Card> findCardByCommitHash(String commitHash) {
+        return persistor.findCardsByCommitHash(commitHash);
+    }
+
     @POST("/dashboard/:dashboardKey/cards")
     public Iterable<Card> addCard(String dashboardKey, Card card) {
         if (card.getKey() != null) {

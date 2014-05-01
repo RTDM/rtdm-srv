@@ -10,6 +10,7 @@ import rtdm.domain.Card;
 import rtdm.domain.Card.Status;
 import rtdm.domain.Dashboard;
 import rtdm.domain.GitCommit;
+import rtdm.domain.Link;
 import rtdm.hooks.domain.GitHubHookPayload;
 import rtdm.persistence.MongoPersistor;
 import rtdm.rest.CardsResource;
@@ -35,8 +36,8 @@ public class GitHubPushHooksResource {
     }
 
     @PermitAll
-    @POST("/hooks/github/:dashboardKey/onPush")
-    public void onPushHook(String dashboardKey, GitHubHookPayload payload) {
+    @POST("/hooks/github/:org/:repo/:dashboardKey/onPush")
+    public void onPushHook(String org, String repo, String dashboardKey, GitHubHookPayload payload) {
         logger.info("received GitHub push hook request for {}: {}", dashboardKey, payload);
 
         Optional<Dashboard> dbDashBoard = persistor.getDashboardByKey(dashboardKey);
@@ -56,6 +57,11 @@ public class GitHubPushHooksResource {
                 logger.info("updating card {} / {} status triggered by github hook", dbDashBoard.get().getName(), cardRef);
                 card.get().setStatus(Status.PUSHED);
                 card.get().getCommits().add(commit);
+                card.get().getLinks().add(new Link()
+                        .setCategory("GitHub")
+                        .setName("commit " + commit.getSha())
+                        .setUrl("https://github.com/" + org + "/" + repo + "/commit/" + commit.getSha())
+                );
                 cardsResource.updateCard(dbDashBoard.get().getKey(), card.get().getKey(), card.get());
             }
         }

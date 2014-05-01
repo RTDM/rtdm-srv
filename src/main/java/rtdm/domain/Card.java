@@ -3,10 +3,6 @@ package rtdm.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Date: 27/4/14
- * Time: 20:37
- */
 public class Card extends Entity {
 
     public enum Status {
@@ -23,6 +19,8 @@ public class Card extends Entity {
 
     private List<GitCommit> commits = new ArrayList<>();
 
+    private List<Link> links = new ArrayList<>();
+
     public String getRef() {
         return ref;
     }
@@ -37,6 +35,10 @@ public class Card extends Entity {
 
     public List<GitCommit> getCommits() {
         return commits;
+    }
+
+    public List<Link> getLinks() {
+        return links;
     }
 
     public Card setRef(final String ref) {
@@ -68,6 +70,11 @@ public class Card extends Entity {
         return this;
     }
 
+    public Card setLinks(final List<Link> links) {
+        this.links = links;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
@@ -76,6 +83,7 @@ public class Card extends Entity {
                 ", text='" + text + '\'' +
                 ", status=" + status +
                 ", commits=" + commits +
+                ", links=" + links +
                 '}';
     }
 }
