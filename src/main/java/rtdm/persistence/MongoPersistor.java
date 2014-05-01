@@ -43,7 +43,7 @@ public class MongoPersistor {
     }
 
     public Iterable<Card> findCardsByCommitHash(String commitHash) {
-        return cards.get().find("{ commits: {$elemMatch: {sha: #}} }", commitHash).as(Card.class);
+        return cards.get().find("{ commits: {$elemMatch: {id: #}} }", commitHash).as(Card.class);
     }
 
     public Optional<Card> getCardByRef(String dashboardKey, String cardRef) {

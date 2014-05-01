@@ -2,19 +2,19 @@ package rtdm.domain;
 
 public class GitCommit {
 
-    private String sha;
+    private String id;
     private String message;
 
-    public String getSha() {
-        return sha;
+    public String getId() {
+        return id;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public GitCommit setSha(final String sha) {
-        this.sha = sha;
+    public GitCommit setId(final String id) {
+        this.id = id;
         return this;
     }
 
@@ -26,7 +26,7 @@ public class GitCommit {
     @Override
     public String toString() {
         return "GitCommit{" +
-                "sha='" + sha + '\'' +
+                "id='" + id + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }
