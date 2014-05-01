@@ -8,11 +8,17 @@ public class Activity extends Entity {
         NEW_RATING, CARD_CREATED, CARD_UPDATED
     }
 
+    private String dashboardKey;
+
     private Event event;
 
     private DateTime timestamp;
 
     private Card card;
+
+    public String getDashboardKey() {
+        return dashboardKey;
+    }
 
     public Event getEvent() {
         return event;
@@ -24,6 +30,11 @@ public class Activity extends Entity {
 
     public Card getCard() {
         return card;
+    }
+
+    public Activity setDashboardKey(final String dashboardKey) {
+        this.dashboardKey = dashboardKey;
+        return this;
     }
 
     public Activity setEvent(final Event event) {
@@ -44,7 +55,8 @@ public class Activity extends Entity {
     @Override
     public String toString() {
         return "Activity{" +
-                "event=" + event +
+                "event=" + dashboardKey +
+                ", event=" + event +
                 ", timestamp=" + timestamp +
                 ", card=" + card +
                 '}';

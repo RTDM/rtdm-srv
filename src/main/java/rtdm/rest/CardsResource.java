@@ -58,6 +58,7 @@ public class CardsResource {
         persistor.createOrUpdateCard(dashboardKey, card.get());
         persistor.createActivity(
                 new Activity()
+                        .setDashboardKey(card.get().getDashboardKey())
                         .setCard(card.get())
                         .setEvent(Activity.Event.CARD_UPDATED)
                         .setTimestamp(DateTime.now())

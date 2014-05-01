@@ -6,6 +6,7 @@ import restx.jongo.JongoCollection;
 import rtdm.domain.Activity;
 import rtdm.domain.Card;
 import rtdm.domain.Dashboard;
+import events.EventBroker;
 
 import javax.inject.Named;
 import java.util.Optional;
@@ -17,12 +18,16 @@ public class MongoPersistor {
     private final JongoCollection cards;
     private final JongoCollection activities;
 
+    private final EventBroker eventBroker;
+
     public MongoPersistor(@Named("dashboards") final JongoCollection dashboards,
                           @Named("cards") final JongoCollection cards,
-                          @Named("activities") final JongoCollection activities) {
+                          @Named("activities") final JongoCollection activities,
+                          EventBroker eventBroker) {
         this.dashboards = dashboards;
         this.cards = cards;
         this.activities = activities;
+        this.eventBroker = eventBroker;
     }
 
     public Iterable<Dashboard> getDashboards() {
@@ -54,11 +59,19 @@ public class MongoPersistor {
 
     public boolean createOrUpdateCard(String dashboardKey, Card card) {
         card.setDashboardKey(dashboardKey);
+        String eventType;
         if (card.getKey() == null) {
             // workaround jongo 1.0 bug - shouldn't be necessary
             card.setKey(new ObjectId().toString());
+            eventType = "card.CREATED";
+        } else {
+            eventType = "card.UPDATED";
         }
+
         cards.get().save(card);
+        eventBroker.broadcast(
+                "dashboard." + card.getDashboardKey(),
+                new CardEvent(eventType, card));
         return true;
     }
 
@@ -70,10 +83,18 @@ public class MongoPersistor {
     public boolean createActivity(Activity activity) {
         activity.setKey(new ObjectId().toString());
         activities.get().save(activity);
+
+        eventBroker.broadcast(
+                "dashboard." + activity.getDashboardKey(),
+                new ActivityEvent(activity));
         return true;
     }
 
     public Iterable<Activity> getActivities() {
         return activities.get().find().as(Activity.class);
+    }
+
+    public Iterable<Activity> finalActivitiesByDashboard(String dashboardKey) {
+        return activities.get().find("{dashboardKey: #}", dashboardKey).as(Activity.class);
     }
 }

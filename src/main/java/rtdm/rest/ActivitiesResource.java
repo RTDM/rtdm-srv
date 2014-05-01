@@ -23,4 +23,10 @@ public class ActivitiesResource {
         return persistor.getActivities();
     }
 
+    @PermitAll
+    @GET("/dashboard/:dashboardKey/activities")
+    public Iterable<Activity> findActivitiesByDashboard(String dashboardKey) {
+        return persistor.finalActivitiesByDashboard(dashboardKey);
+    }
+
 }
