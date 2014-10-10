@@ -53,6 +53,8 @@ public class GitHubPushHooksResource {
             }
             String cardRef = matcher.group(1);
             Optional<Card> card = cardsResource.findCardByRef(dbDashBoard.get().getKey(), cardRef);
+
+            // Change the status of the current card (-> PUSHED)
             if (card.isPresent()) {
                 logger.info("updating card {} / {} status triggered by github hook", dbDashBoard.get().getName(), cardRef);
                 card.get().setStatus(Status.PUSHED);
@@ -62,6 +64,15 @@ public class GitHubPushHooksResource {
                         .setName("commit " + commit.getId().substring(0, 8))
                         .setUrl("https://github.com/" + org + "/" + repo + "/commit/" + commit.getId())
                 );
+                cardsResource.updateCard(dbDashBoard.get().getKey(), card.get().getKey(), card.get());
+            }
+
+            // Change the status of the next card (-> DOING)
+            int nextRef = Integer.parseInt(cardRef);
+            card = cardsResource.findCardByRef(dbDashBoard.get().getKey(), Integer.toString(nextRef));
+            if (card.isPresent()) {
+                logger.info("updating card {} / {} status triggered by github hook", dbDashBoard.get().getName(), cardRef);
+                card.get().setStatus(Status.DOING);
                 cardsResource.updateCard(dbDashBoard.get().getKey(), card.get().getKey(), card.get());
             }
         }
