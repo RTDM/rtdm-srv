@@ -68,7 +68,7 @@ public class GitHubPushHooksResource {
             }
 
             // Change the status of the next card (-> DOING)
-            int nextRef = Integer.parseInt(cardRef);
+            int nextRef = Integer.parseInt(cardRef) + 1;
             card = cardsResource.findCardByRef(dbDashBoard.get().getKey(), Integer.toString(nextRef));
             if (card.isPresent()) {
                 logger.info("updating card {} / {} status triggered by github hook", dbDashBoard.get().getName(), cardRef);
